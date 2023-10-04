@@ -5,6 +5,7 @@ import BikeDetails from "./BikeDetails";
 export default function Bikes() {
   const [detailsBikeId, setDetailsBikeId] = useState(null);
 
+  
   return (
     <div className="container">
       <div className="row">

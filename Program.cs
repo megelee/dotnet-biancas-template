@@ -68,7 +68,10 @@ app.UseHttpsRedirection();
 // these two calls are required to add auth to the pipeline for a request
 app.UseAuthentication();
 app.UseAuthorization();
-
+//This tells ASP.NET that we want to use controllers to create endpoints, 
+    //and the framework is able to discover those controllers in our code.
 app.MapControllers();
+
+
 
 app.Run();
