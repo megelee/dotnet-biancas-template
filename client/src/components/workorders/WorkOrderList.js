@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Table } from "reactstrap";
-import { getIncompleteWorkOrders, updateWorkOrder } from "../../managers/workOrderManager.js";
+import { getIncompleteWorkOrders, updateAsComplete, updateWorkOrder } from "../../managers/workOrderManager.js";
 import { Link } from "react-router-dom";
 import { getUserProfiles } from "../../managers/userProfileManager.js";
 
@@ -70,33 +70,40 @@ const testWorkOrders = [
 ];
 
 export default function WorkOrderList({ loggedInUser }) {
-  const [workOrders, setWorkOrders] = useState([]);
-
-  useEffect(() => {
-    setWorkOrders(testWorkOrders);
-  }, []);
-
-  useEffect(() => {
-    getIncompleteWorkOrders().then(setWorkOrders);
-}, []);
-
-const assignMechanic = (workOrder, mechanicId) => {
-  const clone = structuredClone(workOrder);
-  clone.userProfileId = mechanicId || null;
-  updateWorkOrder(clone).then(() => {
-    getIncompleteWorkOrders().then(setWorkOrders);
-  });
-};
-  const completeWorkOrder = (workOrderId) => {
-    console.log(`Completed ${workOrderId}`);
-  };
-
-  const [mechanics, setMechanics] = useState([]);
-
-useEffect(() => {
-    getIncompleteWorkOrders().then(setWorkOrders);
-    getUserProfiles().then(setMechanics);
-}, []);
+    const [workOrders, setWorkOrders] = useState([]);
+    const [mechanics, setMechanics] = useState([]);
+    const assignMechanic = (workOrder, mechanicId) => {
+        const clone = structuredClone(workOrder);
+        clone.userProfileId = mechanicId || null;
+        updateWorkOrder(clone).then(() => {
+            getIncompleteWorkOrders().then(setWorkOrders);
+        });
+    };
+    useEffect(() => {
+        getIncompleteWorkOrders().then(setWorkOrders);
+        getUserProfiles().then(setMechanics);
+    }, []);
+    useEffect(() => {
+        getIncompleteWorkOrders().then(setWorkOrders);
+    }, []);
+    const completeWorkOrder = (workOrderId) => {
+        const updatedWorkOrders = workOrders.map((wo) => {
+            if (wo.id === workOrderId) {
+                return { ...wo, DateCompleted: new Date() }; // Set DateCompleted to the current date
+            }
+            return wo;
+        });
+        updateAsComplete({ id: workOrderId, DateCompleted: new Date() }).then(() => {
+            setWorkOrders(updatedWorkOrders);
+        });
+        window.location.reload();
+    };
+    const deleteAWorkOrder = (workOrderId) => {
+        const workOrder = { id: workOrderId };
+        deleteAWorkOrder(workOrderId).then(() => {
+            window.location.reload();
+        });
+    };
 
   return (
     <>

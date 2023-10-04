@@ -24,6 +24,21 @@ export const createWorkOrder = (workOrder) => {
     });
   };
 
+  export const updateAsComplete = (workOrder) => {
+    return fetch(`${_apiUrl}/${workOrder.id}/complete`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(workOrder),
+    });
+};
+export const deleteAWorkOrder = (workOrderId) => {
+    return fetch(`${_apiUrl}/${workOrderId}/delete`, {
+        method: "Delete",
+    });
+};
+
  
   
   

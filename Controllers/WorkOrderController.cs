@@ -65,4 +65,35 @@ public IActionResult UpdateWorkOrder(WorkOrder workOrder, int id)
 
     return NoContent();
 }
+[HttpPut("{id}/complete")]
+    [Authorize]
+    public IActionResult UpDateAsComplete(WorkOrder workOrder, int id)
+    {
+        WorkOrder workOrderToUpdate = _dbContext.WorkOrders.SingleOrDefault(wo => wo.Id == id);
+        if (workOrderToUpdate == null)
+        {
+            return NotFound();
+        }
+        else if (id != workOrder.Id)
+        {
+            return BadRequest();
+        }
+        workOrderToUpdate.DateCompleted = DateTime.Now;
+        _dbContext.SaveChanges();
+        return NoContent();
+    }
+    [HttpDelete("{id}/delete")]
+    [Authorize]
+    public IActionResult DeleteWorkOrder(int id)
+    {
+        WorkOrder workOrderToDelete = _dbContext.WorkOrders.SingleOrDefault(wo => wo.Id == id);
+        if (workOrderToDelete == null)
+        {
+            return NotFound();
+        }
+        _dbContext.WorkOrders.Remove(workOrderToDelete);
+        _dbContext.SaveChanges();
+        return NoContent();
+    } 
+
 }
